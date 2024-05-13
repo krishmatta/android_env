@@ -58,8 +58,8 @@ class GymInterfaceWrapper(gym.Env):
       return spaces.Box(
           shape=spec.shape,
           dtype=spec.dtype,
-          low=spec.minimum,
-          high=spec.maximum)
+          low=spec.minimum.item() if spec.minimum.shape == () else spec.minimum,
+          high=spec.maximum.item() if spec.maximum.shape == () else spec.maximum)
 
     if isinstance(spec, specs.Array):
       if spec.dtype == np.uint8:
