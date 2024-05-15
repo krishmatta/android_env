@@ -7,9 +7,9 @@ import time
 from gym import spaces
 
 class AndroidGymEnvironment(gym.Env):
-    def __init__(self, device, reward_fn, reset_cmds, app=None):
+    def __init__(self, device, reward_terminate_fn, reset_cmds, app=None):
         self.device = device
-        self.reward_fn = reward_fn # Takes as input an iterator of the log. Returns reward based on log.
+        self.reward_terminate_fn = reward_terminate_fn # Takes as input an iterator of the log. Returns reward and whether to terminate based on log.
         self.reset_cmds = reset_cmds # List of functions that take the android controller as input, ran when reset is called on environment.
         self.app = app
         self.android_controller = controller.AndroidController(self.device)
@@ -47,8 +47,8 @@ class AndroidGymEnvironment(gym.Env):
 
         return ret
 
-    def _get_reward(self):
-        return self.reward_fn(self.android_controller.get_log())
+    def _get_reward_terminate(self):
+        return self.reward_terminate_fn(self.android_controller.get_log())
 
     def reset(self):
         self.android_controller.home()
@@ -64,8 +64,7 @@ class AndroidGymEnvironment(gym.Env):
         self.android_controller.tap(pos)
 
         observation = self._get_obs()
-        reward = self._get_reward()
-        terminated = False
+        reward, terminated = self._get_reward_terminate()
         info = {}
 
         return observation, reward, terminated, info
