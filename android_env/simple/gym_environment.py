@@ -3,7 +3,8 @@ import gym
 import numpy as np
 import tempfile
 import time
-from .controller import AndroidController
+import re
+from android_env.simple.controller import AndroidController
 from gym import spaces
 
 class AndroidGymEnvironment(gym.Env):
@@ -60,6 +61,16 @@ class AndroidGymEnvironment(gym.Env):
         return self._get_obs()
 
     def step(self, action):
+        # Penalize and terminate if we are not in the right app
+        if self.app:
+            window_dump_lines = self.android_controller.execute_adb_command("shell dumpsys window windows").split('\n')
+            good = False
+            for line in window_dump_lines:
+                if re.search(re.escape(self.app), line, re.IGNORECASE) and "mObscuringWindow" in line:
+                    good = True
+            if not good:
+                return self._get_obs(), -1000, True, {}
+
         pos = tuple(action["pos"])
         self.android_controller.tap(pos)
 
