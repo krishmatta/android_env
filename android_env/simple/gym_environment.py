@@ -1,9 +1,9 @@
-import controller
 import cv2
 import gym
 import numpy as np
 import tempfile
 import time
+from .controller import AndroidController
 from gym import spaces
 
 class AndroidGymEnvironment(gym.Env):
@@ -12,7 +12,7 @@ class AndroidGymEnvironment(gym.Env):
         self.reward_terminate_fn = reward_terminate_fn # Takes as input an iterator of the log. Returns reward and whether to terminate based on log.
         self.reset_cmds = reset_cmds # List of functions that take the android controller as input, ran when reset is called on environment.
         self.app = app
-        self.android_controller = controller.AndroidController(self.device)
+        self.android_controller = AndroidController(self.device)
 
         self.reset()
 
