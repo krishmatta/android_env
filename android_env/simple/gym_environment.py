@@ -12,7 +12,7 @@ class AndroidGymEnvironment(gym.Env):
         self.reward_fn = reward_fn # Takes as input an iterator of the log. Returns reward based on log.
         self.reset_cmds = reset_cmds # List of functions that take the android controller as input, ran when reset is called on environment.
         self.app = app
-        self.android_controller = android_controller.AndroidController(self.device)
+        self.android_controller = controller.AndroidController(self.device)
 
         self.reset()
 
