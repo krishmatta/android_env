@@ -9,6 +9,8 @@ class DiscreteWrapper(gym.Env):
         self.m = m # Num of rows (i.e. height)
         self.n = n # Num of columns (i.e. width)
 
+        self.observation_space = self._env.observation_space
+
         self.action_space = spaces.Dict(
             {
                 # Note that we are swapping the dimensions compared to the og env
